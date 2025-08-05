@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About:blank#blocked</title>
+  <link rel="icon" href="about_blank" id="favicon">
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: black;
+      color: white;
+      overflow-y: auto;
+    }
+
+    /* Top Nav Bar */
+    #navBar {
+      background: #111;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav-icons {
+      display: flex;
+      gap: 20px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .nav-icons span:hover {
+      color: #00ffaa;
+    }
+
+    /* Search Bar */
+    #searchInput {
+      width: 300px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+    }
+
+    /* Dropdowns */
+    .dropdown {
+      padding: 10px;
+      margin-left: 10px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    /* Game Grid */
+    #buttonGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .game-button {
+      padding: 15px;
+      font-size: 14px;
+      background: #222;
+      color: white;
+      border: 1px solid #444;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .game-button:hover {
+      background: #333;
+    }
+
+    /* Particle Background */
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <!-- Particle Background -->
+  <div id="particles-js"></div>
+
+  <!-- Navigation Bar -->
+  <div id="navBar">
+    <div class="nav-icons">
+      <span title="Settings" onclick="openSettings()">⚙️</span>
+      <span title="Games" onclick="location.reload()">🎮</span>
+      <span title="Apps" onclick="alert('Apps page coming soon')">🪟</span>
+    </div>
+    <div>
+      <input type="text" id="searchInput" placeholder="Search games...">
+      <select class="dropdown" onchange="changeFaviconFromMenu(this)">
+        <option value="">Change Favicon</option>
+        <option value="https://www.scholastic.com/favicon.ico">Scholastic</option>
+        <option value="https://www.codehs.com/favicon.ico">CodeHS</option>
+        <option value="https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico">Gmail</option>
+        <option value="https://translate.google.com/favicon.ico">Google Translate</option>
+        <option value="https://docs.google.com/favicon.ico">Google Drive</option>
+        <option value="https://www.ixl.com/favicon.ico">IXL</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Game Grid -->
+  <div id="buttonGrid"></div>
+
+  <!-- Settings Modal (Site Renamer / Cloaker) -->
+  <div id="settingsModal" style="display:none; padding:20px; background:#111; color:white;">
+    <h2>Settings</h2>
+    <label>Rename Site:</label>
+    <input type="text" id="siteTitleInput" placeholder="Enter new title">
+    <button onclick="renameSite()">Rename</button>
+    <br><br>
+    <button onclick="cloaker()">About:Blank Cloak</button>
+  </div>
+
+  <!-- Game List Script -->
+  <script>
+    const gameNames = [ "funny shooter 2","snail bob","spacebar clicker","sonic revert","sprunki","sprunki clicker","stackball.io","subway surfers:barcelona", "subway surfers:beijing","subway surfers:berlin","subway surfers:bueno aires","subway surfers:havana","subway surfers:houston","subway:surfers:iceland", "subway surfers:london","subway surfers:mexico","subway surfers:miami","subway surfers:new orleans","subway surfers:monaco",  "subway:surfers:san francisco", "subway surfers:st.petersburg","subway surfers:winter holiday","subway surfers:zurich","super mario 63","suika game","super mario bros","tasty planet", "temple run 2","The Impossible Game","The Impossible Quiz","The Impossible Quiz 2","The Impossible Quizmas","The Impossible Quiz book chapter 1", "The Impossible Quiz book chapter 2","The Impossible Quiz book chapter 3","there is no game","line rider","shift","shift 2","bad ice cream", "fancy pants adventure","fancy pants adventure 2","fancy pants adventure 3","Stickman hook","fancy pants adventure 4 part 2","portal(flash)","stick RPG", "troll face quest","troll face quest 2","troll face quest 3","troll face quest 4","troll face quest 5","troll face quest sports","troll face quest trolltube", "troll face quest video games","troll face quest video games 2","troll face quest tv shows","troll face quest internet memes","troll face quest 13","unfair mario", "uno","vex 1","vex 2","vex 3","vex 4","vex 3 xmas","vex 6","vex 7","vex 8","vex challenges","vex x3m 1","vex x3m 2","whack your boss","whack your computer", "whack the theif","whack your ex (BROKEN)","whack your neighbor","whack your boss 2 (BROKEN)","whack the trump (BROKEN)","whack the terr@r!st (BROKEn)", "whack the cheater (BROKEN)","whack the serial killer (BROKEN)","whack the boss:superhero edition (BROKEN)","whack your teacher (BROKEN)", "whack your zombie neighbor","whack the burglars","whack the creeps","the visitor","the visitor returns","the visitor massacre at camp happy", "super smash flash","super smash flash 2","eaglecraft 1.8","Binding of Isaac Wrath of The Lamb", "Binding of Isaac - Wrath of the Lamb Eternal Edition","Binding of Isaac demo","eaglecraft 1.12.2","bloons","bloons 2","bloons player pack", "bloons player pack 2","bloons player pack 3","bloons player pack 4","bloons player pack 5","bloons pop 3","more bloons","even more bloons", "bloons 2 spring fling","bloons 2 christmas expansion","bloons junior pack","bloons insanity pack","Hot Air Bloon","Who wants to be an bloonionare", "bloons super monkey","Count masters (no saved progress)","man runner 2048 (no saves)","bloons TD 1","bloons TD 2","bloons TD 3","bloons TD 4", "bloons TD 4 expasion pack","bloons TD 5","FNAF pizzeria Simulator","FNAF ultimate custom night","FNAF sister location","fnaf World","deltarune","bendy and the ink machine CH1&2","undertale","sort the court","worlds hardest game","worlds hardest game 2","worlds hardest game 3","worlds hardest game 4","worlds easyest game","","",""
+    ]; 
+
+    const buttonGrid = document.getElementById("buttonGrid");
+    for (let i = 0; i < gameNames.length; i++) {
+      const btn = document.createElement("button");
+      btn.className = "game-button";
+      btn.textContent = gameNames[i];
+      btn.onclick = () => {
+        window.location.href = `math${i + 1}.html`;
+      };
+      buttonGrid.appendChild(btn);
+    }
+
+    // Search Filter
+    document.getElementById("searchInput").addEventListener("input", function () {
+      const filter = this.value.toLowerCase();
+      const buttons = document.querySelectorAll(".game-button");
+      buttons.forEach((btn) => {
+        const text = btn.textContent.toLowerCase();
+        btn.style.display = text.includes(filter) ? "block" : "none";
+      });
+    });
+
+    // Cloaker
+    function cloaker() {
+      const win = window.open("about:blank", "_blank");
+      const doc = win.document;
+      doc.write(document.documentElement.outerHTML);
+      doc.close();
+    }
+
+    // Site Renamer
+    function renameSite() {
+      const newTitle = document.getElementById("siteTitleInput").value;
+      if (newTitle) {
+        document.title = newTitle;
+      }
+    }
+
+    // Favicon Changer
+    function changeFaviconFromMenu(select) {
+      const url = select.value;
+      if (!url) return;
+      let link = document.querySelector("link[rel*='icon']") || document.createElement("link");
+      link.type = "image/x-icon";
+      link.rel = "shortcut icon";
+      link.href = url;
+      document.getElementsByTagName("head")[0].appendChild(link);
+    }
+
+    // Toggle Settings
+    function openSettings() {
+      const modal = document.getElementById("settingsModal");
+      modal.style.display = modal.style.display === "none" ? "block" : "none";
+    }
+  </script>
+
+  <!-- Particles.js Library -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 80 },
+        color: { value: "#ffffff" },
+        shape: { type: "circle" },
+        opacity: { value: 0.5 },
+        size: { value: 3 },
+        move: { enable: true, speed: 2 }
+      },
+      interactivity: {
+        events: {
+          onhover: { enable: true, mode: "repulse" }
+        }
+      },
+      retina_detect: true
+    });
+  </script>
+</body>
+</html>
